@@ -1,0 +1,1 @@
+[16-Jan-2026 12:58:57 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library 'php_curl.dll' (tried: C:\MAMP\bin\php\php8.2.1\ext\php_curl.dll (No se puede encontrar el módulo especificado), C:\MAMP\bin\php\php8.2.1\ext\php_php_curl.dll.dll (No se puede encontrar el módulo especificado)) in Unknown on line 0
