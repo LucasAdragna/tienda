@@ -1,4 +1,4 @@
-import CardProducto from "@/components/CardProducto";
+import { CardProducto } from "@/components/ui";
 
 const productos = [
   { id: 1, nombre: "Producto A", precio: 100 },

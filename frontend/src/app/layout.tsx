@@ -5,8 +5,8 @@ import "./globals.css";
 
 
 // Si usas alias "@", ajusta tsconfig.json
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header, Footer } from "@/components/layout";
+
 
 const inter = Inter({ subsets: ["latin"] });
 

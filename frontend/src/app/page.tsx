@@ -1,7 +1,7 @@
 // src/app/page.tsx
-import HomeSlider from "@/components/HomeSlider";
-import FeaturedProducts from "@/components/ProductosDestacados";
-import LatestNews from "@/components/NoticiasRecientes";
+import { HomeSlider, ProductosDestacados, NoticiasRecientes } from "@/components/common";
+
+
 
 export default function HomePage() {
   return (
@@ -41,10 +41,10 @@ export default function HomePage() {
       </section>
 
       {/* Productos destacados */}
-      <FeaturedProducts />
+      <ProductosDestacados />
 
       {/* Noticias recientes */}
-      <LatestNews />
+      <NoticiasRecientes />
     </>
   );
 }
