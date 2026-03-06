@@ -1,52 +1,57 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+const links = [
+  { href: "/", label: "Inicio" },
+  { href: "/habitaciones", label: "Habitaciones" },
+  { href: "/servicios", label: "Servicios" },
+  { href: "/galeria", label: "Galeria" },
+  { href: "/contacto", label: "Contacto" },
+  { href: "/reservas", label: "Reservar" },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const isActive = (href: string) =>
-    pathname === href ? "active" : undefined;
-
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container">
-        <Link href="/" className="navbar-brand fw-semibold">
-          Mi Tienda
+    <header className="border-bottom bg-white sticky-top">
+      <nav className="navbar navbar-expand-lg navbar-light container py-3">
+        <Link href="/" className="navbar-brand fw-bold">
+          Hotel Costa Azul
         </Link>
 
         <button
           className="navbar-toggler"
           type="button"
-          aria-label="Toggle navigation"
-          onClick={() => setOpen(!open)}
+          aria-label="Abrir menu"
+          onClick={() => setOpen((value) => !value)}
         >
           <span className="navbar-toggler-icon" />
         </button>
 
         <div className={`collapse navbar-collapse ${open ? "show" : ""}`}>
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link href="/productos" className={`nav-link ${isActive("/productos")}`}>
-                Productos
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link href="/login" className={`nav-link ${isActive("/login")}`}>
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link href="/contacto" className={`nav-link ${isActive("/contacto")}`}>
-                Contacto
-              </Link>
-            </li>
+          <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            {links.map((link) => {
+              const isActive = pathname === link.href;
+              const linkClass = link.href === "/reservas"
+                ? "btn btn-primary ms-lg-2"
+                : `nav-link ${isActive ? "active fw-semibold" : ""}`;
+
+              return (
+                <li className="nav-item" key={link.href}>
+                  <Link href={link.href} className={linkClass}>
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }

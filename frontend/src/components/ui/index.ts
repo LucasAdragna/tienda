@@ -1,1 +1,1 @@
-﻿export { default as CardProducto } from "./CardProducto";
+﻿export { default as RoomCard } from "./RoomCard";

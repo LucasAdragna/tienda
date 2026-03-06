@@ -1,13 +1,8 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+﻿:root {
+  --hotel-primary: #0d6efd;
+  --hotel-dark: #0d1b2a;
+  --hotel-text: #1f2a37;
+  --hotel-soft: #f8fafc;
 }
 
 html,
@@ -17,17 +12,14 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--hotel-text);
+  background: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -35,8 +27,44 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.hero-hotel {
+  min-height: 70vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hero-hotel .hero-image {
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(95deg, rgba(13, 27, 42, 0.86) 0%, rgba(13, 27, 42, 0.5) 55%, rgba(13, 27, 42, 0.15) 100%);
+}
+
+.hero-content {
+  max-width: 680px;
+}
+
+.gallery-thumb {
+  aspect-ratio: 4 / 3;
+}
+
+.cta-section {
+  background: var(--hotel-soft);
+}
+
+.footer-hotel {
+  background: var(--hotel-dark);
+  color: #e5e7eb;
+}
+
+.footer-hotel a {
+  color: #e5e7eb;
+}
+
+.footer-hotel a:hover {
+  color: #ffffff;
 }

@@ -1,3 +1,4 @@
-﻿export { default as HomeSlider } from "./HomeSlider";
-export { default as NoticiasRecientes } from "./NoticiasRecientes";
-export { default as ProductosDestacados } from "./ProductosDestacados";
+﻿export { default as HeroHotel } from "./HeroHotel";
+export { default as RoomsPreview } from "./RoomsPreview";
+export { default as AmenitiesSection } from "./AmenitiesSection";
+export { default as GalleryPreview } from "./GalleryPreview";
