@@ -35,7 +35,12 @@ a {
 }
 
 .hero-hotel .hero-image {
-  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: background-image 0.35s ease-in-out;
 }
 
 .hero-overlay {
@@ -46,6 +51,27 @@ a {
 
 .hero-content {
   max-width: 680px;
+}
+
+.hero-indicators {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-indicator {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.hero-indicator.active {
+  background: #ffffff;
+  transform: scale(1.2);
 }
 
 .gallery-thumb {

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { AmenitiesSection, GalleryPreview, HeroHotel, RoomsPreview } from "@/components/common";
 
 export default function HomePage() {
@@ -19,7 +19,9 @@ export default function HomePage() {
               </p>
             </div>
             <div className="col-lg-4 text-lg-end">
-              <Link href="/reservas" className="btn btn-primary btn-lg">Ir a reservas</Link>
+              <Link href="/reservas" className="btn btn-primary btn-lg">
+                Ir a reservas
+              </Link>
             </div>
           </div>
         </div>
