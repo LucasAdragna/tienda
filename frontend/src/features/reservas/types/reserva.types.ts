@@ -6,6 +6,7 @@ export type ReservationFormData = {
   roomType: string;
   guestName: string;
   guestEmail: string;
+  guestPhone: string;
   website: string;
 };
 

@@ -21,6 +21,7 @@ const dynamicRemotePattern = (() => {
 })();
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["http://192.168.1.32:3000"],
   images: {
     remotePatterns: [
       {

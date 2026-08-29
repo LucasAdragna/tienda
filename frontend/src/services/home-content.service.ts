@@ -1,5 +1,5 @@
 import { backendGet } from "@/lib/backend-client";
-import type { GalleryImage, HotelAmenity, HotelRoom } from "@/types/hotel";
+import type { GalleryImage, HotelAboutUs, HotelRoom } from "@/types/hotel";
 
 const ROOM_PLACEHOLDER_IMAGE = "/images/hotel/instalaciones1.jpg";
 
@@ -9,13 +9,37 @@ type ApiResponse<T> = {
 
 type RoomApiItem = {
   id: string;
+  slug: string;
   name: string;
   description: string;
   capacity: number;
   pricePerNight: number;
   image: string | null;
+  images?: GalleryApiItem[];
   amenities: string[];
 };
+
+function mapRoom(room: RoomApiItem): HotelRoom {
+  const images = Array.isArray(room.images)
+    ? room.images.map((image) => ({
+        src: String(image.src ?? ""),
+        alt: String(image.alt ?? room.name ?? "Habitacion"),
+      })).filter((image) => image.src.trim() !== "")
+    : [];
+  const image = room.image && room.image.trim() !== "" ? room.image : images[0]?.src ?? ROOM_PLACEHOLDER_IMAGE;
+
+  return {
+    id: String(room.id),
+    slug: String(room.slug ?? room.id),
+    name: String(room.name ?? ""),
+    description: String(room.description ?? ""),
+    capacity: Number(room.capacity ?? 1),
+    pricePerNight: Number(room.pricePerNight ?? 0),
+    image,
+    images: images.length > 0 ? images : [{ src: image, alt: String(room.name ?? "Habitacion") }],
+    amenities: Array.isArray(room.amenities) ? room.amenities : [],
+  };
+}
 
 export async function getRoomsPreview(): Promise<HotelRoom[]> {
   const payload = await backendGet<ApiResponse<RoomApiItem>>("/api/rooms");
@@ -24,33 +48,39 @@ export async function getRoomsPreview(): Promise<HotelRoom[]> {
     return [];
   }
 
-  return payload.data.map((room) => ({
-    id: String(room.id),
-    name: String(room.name ?? ""),
-    description: String(room.description ?? ""),
-    capacity: Number(room.capacity ?? 1),
-    pricePerNight: Number(room.pricePerNight ?? 0),
-    image: room.image && room.image.trim() !== "" ? room.image : ROOM_PLACEHOLDER_IMAGE,
-    amenities: Array.isArray(room.amenities) ? room.amenities : [],
-  }));
+  return payload.data.map(mapRoom);
 }
 
-type AmenityApiItem = {
-  title: string;
-  description: string;
-};
+export async function getRoomBySlug(slug: string): Promise<HotelRoom | null> {
+  const payload = await backendGet<{ data?: RoomApiItem }>(`/api/rooms/${slug}`);
 
-export async function getAmenities(): Promise<HotelAmenity[]> {
-  const payload = await backendGet<ApiResponse<AmenityApiItem>>("/api/amenities");
-
-  if (!payload?.data || !Array.isArray(payload.data) || payload.data.length === 0) {
-    return [];
+  if (!payload?.data) {
+    return null;
   }
 
-  return payload.data.map((amenity) => ({
-    title: String(amenity.title ?? ""),
-    description: String(amenity.description ?? ""),
-  }));
+  return mapRoom(payload.data);
+}
+
+type AboutUsApiItem = {
+  title: string;
+  text: string;
+  image: string;
+  pdf: string;
+};
+
+export async function getAboutUs(): Promise<HotelAboutUs | null> {
+  const payload = await backendGet<{ data?: AboutUsApiItem | null }>("/api/sobre-nosotros");
+
+  if (!payload?.data) {
+    return null;
+  }
+
+  return {
+    title: String(payload.data.title ?? ""),
+    text: String(payload.data.text ?? ""),
+    image: String(payload.data.image ?? ""),
+    pdf: String(payload.data.pdf ?? ""),
+  };
 }
 
 type GalleryApiItem = {

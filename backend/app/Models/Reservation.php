@@ -14,6 +14,11 @@ class Reservation extends Model
         'customer_email',
         'customer_phone',
         'reservation_date',
+        'check_in',
+        'check_out',
+        'room_type',
+        'adults',
+        'children',
         'people_count',
         'status',
         'notes',
@@ -23,6 +28,10 @@ class Reservation extends Model
     {
         return [
             'reservation_date' => 'datetime',
+            'check_in' => 'date',
+            'check_out' => 'date',
+            'adults' => 'integer',
+            'children' => 'integer',
         ];
     }
 }

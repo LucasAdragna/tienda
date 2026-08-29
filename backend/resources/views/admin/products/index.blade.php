@@ -19,8 +19,8 @@
     </div>
 
     <div class="card-style mb-30">
-        <div class="table-wrapper table-responsive">
-            <table class="table">
+        <div class="table-wrapper table-responsive data-grid-wrap">
+            <table class="table grid-table">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -28,34 +28,39 @@
                     <th>Tipo</th>
                     <th>Tarifa</th>
                     <th>Disponibles</th>
-                    <th>Estado</th>
+                    <th>Visible</th>
                     <th class="text-end">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 @forelse($products as $product)
                     <tr>
-                        <td>{{ $product->id }}</td>
+                        <td class="text-center">{{ $product->id }}</td>
                         <td>
                             <h6>{{ $product->name }}</h6>
-                            <p class="text-sm mb-0">{{ $product->slug }}</p>
                         </td>
                         <td>{{ $product->category?->name ?? 'Sin tipo' }}</td>
                         <td>${{ number_format((float) $product->price, 2, ',', '.') }}</td>
-                        <td>{{ $product->stock }}</td>
-                        <td>
-                            @if($product->is_active)
-                                <span class="status-btn success-btn">Activa</span>
-                            @else
-                                <span class="status-btn close-btn">Inactiva</span>
-                            @endif
+                        <td class="text-center">{{ $product->stock }}</td>
+                        <td class="text-center">
+                            <form action="{{ route('admin.productos.visibility', $product) }}" method="POST" class="d-inline" data-toggle-visibility>
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="bool-indicator {{ $product->is_visible ? 'is-true' : 'is-false' }} border-0" title="{{ $product->is_visible ? 'Visible' : 'No visible' }}" aria-label="{{ $product->is_visible ? 'Visible' : 'No visible' }}">
+                                    {!! $product->is_visible ? '&#10003;' : '&#10005;' !!}
+                                </button>
+                            </form>
                         </td>
-                        <td class="text-end">
-                            <a href="{{ route('admin.productos.edit', $product) }}" class="main-btn warning-btn-outline btn-hover btn-sm">Editar</a>
+                        <td class="text-center">
+                            <a href="{{ route('admin.productos.edit', $product) }}" class="icon-action-btn is-edit" title="Editar">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
                             <form action="{{ route('admin.productos.destroy', $product) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="main-btn danger-btn-outline btn-hover btn-sm" data-confirm-delete>Eliminar</button>
+                                <button type="submit" class="icon-action-btn is-delete" data-confirm-delete title="Eliminar">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>

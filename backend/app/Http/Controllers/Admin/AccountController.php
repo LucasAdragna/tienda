@@ -30,6 +30,6 @@ class AccountController extends Controller
             $request->session()->regenerateToken();
         }
 
-        return redirect()->route('admin.dashboard')->with('success', 'Sesion cerrada correctamente.');
+        return redirect()->route('admin.login')->with('success', 'Sesion cerrada correctamente.');
     }
 }

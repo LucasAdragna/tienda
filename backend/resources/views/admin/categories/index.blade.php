@@ -19,43 +19,48 @@
     </div>
 
     <div class="card-style mb-30">
-        <div class="table-wrapper table-responsive">
-            <table class="table">
+        <div class="table-wrapper table-responsive data-grid-wrap">
+            <table class="table grid-table">
                 <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Nombre</th>
-                    <th>Estado</th>
-                    <th class="text-end">Acciones</th>
+                    <th class="text-center">Orden</th>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Visible</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 @forelse($categories as $category)
                     <tr>
-                        <td>{{ $category->id }}</td>
-                        <td>
+                        <td class="text-center">{{ $category->sort_order }}</td>
+                        <td class="text-center">
                             <h6>{{ $category->name }}</h6>
-                            <p class="text-sm mb-0">{{ $category->description }}</p>
                         </td>
-                        <td>
-                            @if($category->is_active)
-                                <span class="status-btn success-btn">Activa</span>
-                            @else
-                                <span class="status-btn close-btn">Inactiva</span>
-                            @endif
+                        <td class="text-center">
+                            <form action="{{ route('admin.categorias.visibility', $category) }}" method="POST" class="d-inline" data-toggle-visibility>
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="bool-indicator {{ $category->is_visible ? 'is-true' : 'is-false' }} border-0" title="{{ $category->is_visible ? 'Visible' : 'No visible' }}" aria-label="{{ $category->is_visible ? 'Visible' : 'No visible' }}">
+                                    {!! $category->is_visible ? '&#10003;' : '&#10005;' !!}
+                                </button>
+                            </form>
                         </td>
-                        <td class="text-end">
-                            <a href="{{ route('admin.categorias.edit', $category) }}" class="main-btn warning-btn-outline btn-hover btn-sm">Editar</a>
+                        <td class="text-center">
+                            <a href="{{ route('admin.categorias.edit', $category) }}" class="icon-action-btn is-edit" title="Editar">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
                             <form action="{{ route('admin.categorias.destroy', $category) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="main-btn danger-btn-outline btn-hover btn-sm" data-confirm-delete>Eliminar</button>
+                                <button type="submit" class="icon-action-btn is-delete" data-confirm-delete title="Eliminar">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No hay tipos cargados.</td>
+                        <td colspan="5" class="text-center text-muted py-4">No hay tipos cargados.</td>
                     </tr>
                 @endforelse
                 </tbody>

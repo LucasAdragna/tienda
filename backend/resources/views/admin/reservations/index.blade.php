@@ -19,13 +19,14 @@
     </div>
 
     <div class="card-style mb-30">
-        <div class="table-wrapper table-responsive">
-            <table class="table">
+        <div class="table-wrapper table-responsive data-grid-wrap">
+            <table class="table grid-table">
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>Cliente</th>
-                    <th>Fecha</th>
+                    <th>Estadia</th>
+                    <th>Habitacion</th>
                     <th>Personas</th>
                     <th>Estado</th>
                     <th class="text-end">Acciones</th>
@@ -34,26 +35,36 @@
                 <tbody>
                 @forelse($reservations as $reservation)
                     <tr>
-                        <td>{{ $reservation->id }}</td>
+                        <td class="text-center">{{ $reservation->id }}</td>
                         <td>
                             <h6>{{ $reservation->customer_name }}</h6>
-                            <p class="text-sm mb-0">{{ $reservation->customer_email }}</p>
                         </td>
-                        <td>{{ $reservation->reservation_date->format('d/m/Y H:i') }}</td>
-                        <td>{{ $reservation->people_count }}</td>
+                        <td>
+                            @if($reservation->check_in && $reservation->check_out)
+                                {{ $reservation->check_in->format('d/m/Y') }} al {{ $reservation->check_out->format('d/m/Y') }}
+                            @else
+                                {{ $reservation->reservation_date->format('d/m/Y H:i') }}
+                            @endif
+                        </td>
+                        <td>{{ $reservation->room_type ?? '-' }}</td>
+                        <td class="text-center">{{ $reservation->people_count }}</td>
                         <td><span class="status-btn info-btn">{{ ucfirst($reservation->status) }}</span></td>
-                        <td class="text-end">
-                            <a href="{{ route('admin.reservas.edit', $reservation) }}" class="main-btn warning-btn-outline btn-hover btn-sm">Editar</a>
+                        <td class="text-center">
+                            <a href="{{ route('admin.reservas.edit', $reservation) }}" class="icon-action-btn is-edit" title="Editar">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
                             <form action="{{ route('admin.reservas.destroy', $reservation) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="main-btn danger-btn-outline btn-hover btn-sm" data-confirm-delete>Eliminar</button>
+                                <button type="submit" class="icon-action-btn is-delete" data-confirm-delete title="Eliminar">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No hay reservas cargadas.</td>
+                        <td colspan="7" class="text-center text-muted py-4">No hay reservas cargadas.</td>
                     </tr>
                 @endforelse
                 </tbody>

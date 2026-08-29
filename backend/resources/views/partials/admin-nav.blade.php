@@ -30,5 +30,11 @@
                 <span class="text">Slider</span>
             </a>
         </li>
+        <li class="nav-item {{ request()->routeIs('admin.sobre-nosotros.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.sobre-nosotros.index') }}">
+                <span class="icon"><i class="lni lni-library"></i></span>
+                <span class="text">Sobre nosotros</span>
+            </a>
+        </li>
     </ul>
 </nav>

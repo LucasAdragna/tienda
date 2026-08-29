@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
     public function index(): View
     {
-        $categories = Category::latest()->paginate(10);
+        $categories = Category::orderBy('sort_order')->orderBy('name')->paginate(10);
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -27,9 +27,15 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:80', 'unique:categories,name'],
             'description' => ['nullable', 'string', 'max:500'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:999'],
+            'is_visible' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $data['sort_order'] = $request->filled('sort_order')
+            ? (int) $data['sort_order']
+            : ((int) Category::max('sort_order')) + 1;
+        $data['is_visible'] = $request->boolean('is_visible');
         $data['is_active'] = $request->boolean('is_active');
 
         Category::create($data);
@@ -47,9 +53,15 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:80', 'unique:categories,name,' . $categoria->id],
             'description' => ['nullable', 'string', 'max:500'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:999'],
+            'is_visible' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $data['sort_order'] = $request->filled('sort_order')
+            ? (int) $data['sort_order']
+            : $categoria->sort_order;
+        $data['is_visible'] = $request->boolean('is_visible');
         $data['is_active'] = $request->boolean('is_active');
 
         $categoria->update($data);
@@ -62,5 +74,22 @@ class CategoryController extends Controller
         $categoria->delete();
 
         return redirect()->route('admin.categorias.index')->with('success', 'Categoria eliminada correctamente.');
+    }
+
+    public function toggleVisibility(Request $request, Category $categoria): RedirectResponse|\Illuminate\Http\JsonResponse
+    {
+        $categoria->update([
+            'is_visible' => ! $categoria->is_visible,
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'visible' => $categoria->is_visible,
+                'label' => $categoria->is_visible ? 'Visible' : 'No visible',
+                'symbol' => $categoria->is_visible ? '&#10003;' : '&#10005;',
+            ]);
+        }
+
+        return redirect()->route('admin.categorias.index')->with('success', 'Visibilidad actualizada correctamente.');
     }
 }

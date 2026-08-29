@@ -39,15 +39,15 @@
                             : asset('storage/' . $slider->s_imagen);
                     @endphp
                     <tr>
-                        <td>{{ $slider->s_orden }}</td>
+                        <td class="text-center">{{ $slider->s_orden }}</td>
                         <td>
-                            <img src="{{ $imageUrl }}" alt="{{ $slider->s_titulo }}" style="width: 100px; height: 56px; object-fit: cover; border-radius: 8px;">
+                            <img src="{{ $imageUrl }}" alt="{{ $slider->s_titulo }}" style="width: 100px; height: 50px; object-fit: cover; border-radius: 8px;">
                         </td>
                         <td>
                             <h6>{{ $slider->s_titulo }}</h6>
                         </td>
                         <td>{{ $slider->s_link }}</td>
-                        <td>
+                        <td class="text-center">
                             @if((int) $slider->s_visible === 1)
                                 <span class="bool-indicator is-true" title="Visible">&#10003;</span>
                             @else
@@ -55,7 +55,7 @@
                             @endif
                         </td>
 
-                        <td class="text-end">
+                        <td class="text-center">
                             <a href="{{ route('admin.sliders.edit', $slider) }}" class="icon-action-btn is-edit" title="Editar">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { RoomCard } from "@/components/ui";
 import { getRoomsPreview } from "@/services/home-content.service";
 
@@ -12,15 +13,15 @@ export default async function RoomsPreview() {
             <p className="text-uppercase small mb-1">Habitaciones</p>
             <h2 className="mb-0">Opciones para cada tipo de viaje</h2>
           </div>
-          <a href="/habitaciones" className="btn btn-outline-secondary">
+          <Link href="/habitaciones" className="btn btn-outline-secondary">
             Ver todas
-          </a>
+          </Link>
         </div>
         {rooms.length > 0 ? (
           <div className="row g-4">
             {rooms.slice(0, 3).map((room) => (
               <div className="col-md-6 col-lg-4" key={room.id}>
-                <RoomCard room={room} />
+                <RoomCard room={room} descriptionLines={2} />
               </div>
             ))}
           </div>

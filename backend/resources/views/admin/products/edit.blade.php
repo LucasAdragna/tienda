@@ -15,7 +15,7 @@
 
     <div class="card-style mb-30">
         <div class="card-body">
-            <form action="{{ route('admin.productos.update', $product) }}" method="POST">
+            <form action="{{ route('admin.productos.update', $product) }}" method="POST" enctype="multipart/form-data">
                 @method('PUT')
                 @include('admin.products.form')
             </form>

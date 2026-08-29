@@ -14,12 +14,16 @@ class Category extends Model
         'name',
         'description',
         'is_active',
+        'sort_order',
+        'is_visible',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'sort_order' => 'integer',
+            'is_visible' => 'boolean',
         ];
     }
 

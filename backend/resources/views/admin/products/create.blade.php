@@ -15,7 +15,7 @@
 
     <div class="card-style mb-30">
         <div class="card-body">
-            <form action="{{ route('admin.productos.store') }}" method="POST">
+            <form action="{{ route('admin.productos.store') }}" method="POST" enctype="multipart/form-data">
                 @include('admin.products.form')
             </form>
         </div>

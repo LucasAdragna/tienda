@@ -1,26 +1,40 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { isTooSoon, sanitizeEmail, sanitizeText } from "@/utils/formSecurity";
+import { isTooSoon, sanitizeEmail, sanitizePhone, sanitizeText } from "@/utils/formSecurity";
 import { checkAvailability } from "../services/reserva.service";
 import type { ReservationFormData, ReservationValidationErrors } from "../types/reserva.types";
 import { validateReservation } from "../validators/reserva.validator";
 
 const COOLDOWN_MS = 10_000;
 
+type ReservationRoomOption = {
+  slug: string;
+  name: string;
+  capacity: number;
+};
+
 const initialData: ReservationFormData = {
   checkIn: "",
   checkOut: "",
   adults: 2,
   children: 0,
-  roomType: "suite-mar",
+  roomType: "",
   guestName: "",
   guestEmail: "",
+  guestPhone: "",
   website: "",
 };
 
-export default function ReservationForm() {
-  const [form, setForm] = useState<ReservationFormData>(initialData);
+type ReservationFormProps = {
+  rooms: ReservationRoomOption[];
+};
+
+export default function ReservationForm({ rooms }: ReservationFormProps) {
+  const [form, setForm] = useState<ReservationFormData>({
+    ...initialData,
+    roomType: rooms[0]?.slug ?? "",
+  });
   const [errors, setErrors] = useState<ReservationValidationErrors>({});
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -48,6 +62,7 @@ export default function ReservationForm() {
       ...form,
       guestName: sanitizeText(form.guestName),
       guestEmail: sanitizeEmail(form.guestEmail),
+      guestPhone: sanitizePhone(form.guestPhone),
       website: sanitizeText(form.website),
     };
 
@@ -66,9 +81,16 @@ export default function ReservationForm() {
     const result = await checkAvailability(payload);
     setLoading(false);
 
+    if (result.errors) {
+      setErrors(result.errors);
+    }
+
     if (result.available) {
-      setStatus(`OK: ${result.message} Siguiente paso: pago y confirmacion.`);
-      setForm((prev) => ({ ...prev, guestName: payload.guestName, guestEmail: payload.guestEmail }));
+      setStatus(result.message);
+      setForm({
+        ...initialData,
+        roomType: rooms[0]?.slug ?? "",
+      });
     } else {
       setStatus(result.message);
     }
@@ -153,15 +175,20 @@ export default function ReservationForm() {
             className="form-select"
             value={form.roomType}
             onChange={(event) => setForm({ ...form, roomType: event.target.value })}
+            disabled={rooms.length === 0}
+            required
           >
-            <option value="suite-mar">Suite Vista Mar</option>
-            <option value="familiar-plus">Familiar Plus</option>
-            <option value="doble-confort">Doble Confort</option>
-            <option value="junior-suite">Junior Suite</option>
+            {rooms.length === 0 && <option value="">No hay habitaciones disponibles</option>}
+            {rooms.map((room) => (
+              <option key={room.slug} value={room.slug}>
+                {room.name} - hasta {room.capacity} personas
+              </option>
+            ))}
           </select>
+          {errors.roomType && <div className="text-danger small mt-1">{errors.roomType}</div>}
         </div>
 
-        <div className="col-md-6">
+        <div className="col-md-4">
           <label htmlFor="guestName" className="form-label">Nombre y apellido</label>
           <input
             id="guestName"
@@ -177,7 +204,7 @@ export default function ReservationForm() {
           {errors.guestName && <div className="text-danger small mt-1">{errors.guestName}</div>}
         </div>
 
-        <div className="col-md-6">
+        <div className="col-md-4">
           <label htmlFor="guestEmail" className="form-label">Email</label>
           <input
             id="guestEmail"
@@ -192,12 +219,28 @@ export default function ReservationForm() {
           />
           {errors.guestEmail && <div className="text-danger small mt-1">{errors.guestEmail}</div>}
         </div>
+
+        <div className="col-md-4">
+          <label htmlFor="guestPhone" className="form-label">Telefono</label>
+          <input
+            id="guestPhone"
+            type="tel"
+            className="form-control"
+            value={form.guestPhone}
+            onChange={(event) => setForm({ ...form, guestPhone: event.target.value })}
+            placeholder="Ej: +54 9 11 1234 5678"
+            autoComplete="tel"
+            maxLength={30}
+            required
+          />
+          {errors.guestPhone && <div className="text-danger small mt-1">{errors.guestPhone}</div>}
+        </div>
       </div>
 
       <div className="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-3">
         <p className="mb-0 text-secondary">Noches: <strong>{nights}</strong></p>
-        <button className="btn btn-primary" disabled={loading} type="submit">
-          {loading ? "Consultando..." : "Validar disponibilidad"}
+        <button className="btn btn-primary" disabled={loading || rooms.length === 0} type="submit">
+          {loading ? "Enviando..." : "Solicitar reserva"}
         </button>
       </div>
 

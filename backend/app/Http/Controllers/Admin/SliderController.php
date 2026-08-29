@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class SliderController extends Controller
@@ -31,13 +31,17 @@ class SliderController extends Controller
         $data = $request->validate([
             's_titulo' => ['required', 'string', 'max:100'],
             's_texto' => ['required', 'string'],
-            's_imagen' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            's_imagen' => ['required', 'file', 'max:4096'],
             's_link' => ['required', 'string', 'max:100'],
             's_orden' => ['required', 'integer', 'min:0', 'max:999'],
             's_visible' => ['nullable', 'boolean'],
         ]);
 
-        $data['s_imagen'] = $request->file('s_imagen')->store('sliders', 'public');
+        if ($redirect = $this->validateImageFile($request, 's_imagen')) {
+            return $redirect;
+        }
+
+        $data['s_imagen'] = $this->storeImageFile($request->file('s_imagen'), 'sliders');
         $data['s_tag'] = 0;
         $data['s_visible'] = $request->boolean('s_visible') ? 1 : 0;
         $data['s_activo'] = 1;
@@ -57,18 +61,23 @@ class SliderController extends Controller
         $data = $request->validate([
             's_titulo' => ['required', 'string', 'max:100'],
             's_texto' => ['required', 'string'],
-            's_imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            's_imagen' => ['nullable', 'file', 'max:4096'],
             's_link' => ['required', 'string', 'max:100'],
             's_orden' => ['required', 'integer', 'min:0', 'max:999'],
             's_visible' => ['nullable', 'boolean'],
         ]);
 
+        if ($redirect = $this->validateImageFile($request, 's_imagen')) {
+            return $redirect;
+        }
+
         if ($request->hasFile('s_imagen')) {
-            if ($slider->s_imagen && Storage::disk('public')->exists($slider->s_imagen)) {
-                Storage::disk('public')->delete($slider->s_imagen);
+            $imagePath = storage_path('app/public/'.$slider->s_imagen);
+            if ($slider->s_imagen && is_file($imagePath)) {
+                @unlink($imagePath);
             }
 
-            $data['s_imagen'] = $request->file('s_imagen')->store('sliders', 'public');
+            $data['s_imagen'] = $this->storeImageFile($request->file('s_imagen'), 'sliders');
         } else {
             unset($data['s_imagen']);
         }
@@ -84,12 +93,46 @@ class SliderController extends Controller
 
     public function destroy(Slider $slider): RedirectResponse
     {
-        if ($slider->s_imagen && Storage::disk('public')->exists($slider->s_imagen)) {
-            Storage::disk('public')->delete($slider->s_imagen);
+        $imagePath = storage_path('app/public/'.$slider->s_imagen);
+        if ($slider->s_imagen && is_file($imagePath)) {
+            @unlink($imagePath);
         }
 
         $slider->delete();
 
         return redirect()->route('admin.sliders.index')->with('success', 'Slide eliminado correctamente.');
+    }
+
+    private function validateImageFile(Request $request, string $field): ?RedirectResponse
+    {
+        if (! $request->hasFile($field)) {
+            return null;
+        }
+
+        $image = $request->file($field);
+        $extension = strtolower($image->getClientOriginalExtension());
+
+        if (! in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true) || @getimagesize($image->getRealPath()) === false) {
+            return back()
+                ->withErrors([$field => 'Solo se permiten imagenes JPG, PNG o WEBP validas.'])
+                ->withInput();
+        }
+
+        return null;
+    }
+
+    private function storeImageFile($image, string $directory): string
+    {
+        $extension = strtolower($image->getClientOriginalExtension());
+        $filename = Str::uuid().'.'.$extension;
+        $targetDirectory = storage_path('app/public/'.$directory);
+
+        if (! is_dir($targetDirectory)) {
+            mkdir($targetDirectory, 0755, true);
+        }
+
+        $image->move($targetDirectory, $filename);
+
+        return $directory.'/'.$filename;
     }
 }

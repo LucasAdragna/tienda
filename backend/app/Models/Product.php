@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -18,6 +19,7 @@ class Product extends Model
         'price',
         'stock',
         'is_active',
+        'is_visible',
     ];
 
     protected function casts(): array
@@ -25,11 +27,20 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
             'is_active' => 'boolean',
+            'is_visible' => 'boolean',
         ];
     }
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id');
     }
 }

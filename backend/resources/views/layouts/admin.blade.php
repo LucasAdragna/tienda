@@ -1,3 +1,10 @@
+@php
+    $adminBrandName = config('admin_branding.name', 'Hotel Admin');
+    $adminPanelTitle = config('admin_branding.panel_title', 'Panel Hotel');
+    $adminTagline = config('admin_branding.tagline', 'Gestion centralizada de habitaciones, reservas y contenido de la web.');
+    $adminLogoUrl = config('admin_branding.logo_url');
+    $adminLogoSrc = $adminLogoUrl ? (str_starts_with($adminLogoUrl, 'http') || str_starts_with($adminLogoUrl, '/') ? $adminLogoUrl : asset($adminLogoUrl)) : asset('plainadmin/images/logo/logo.svg');
+@endphp
 <!doctype html>
 <html lang="es">
 <head>
@@ -5,7 +12,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('plainadmin/images/favicon.svg') }}" type="image/x-icon">
-    <title>@yield('title', 'Panel Hotel') | Panel Hotel</title>
+    <title>@yield('title', $adminPanelTitle) | {{ $adminPanelTitle }}</title>
 
     <link rel="stylesheet" href="{{ asset('plainadmin/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plainadmin/css/lineicons.css') }}">
@@ -63,6 +70,85 @@
         }
         .theme-toggle-btn i {
             margin-right: 6px;
+        }
+        .sidebar-nav-wrapper {
+            background: linear-gradient(180deg, #0f172a 0%, #111827 48%, #1e293b 100%);
+            box-shadow: 18px 0 45px rgba(15, 23, 42, 0.18);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+        }
+        .sidebar-nav-wrapper::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 1px;
+            height: 100vh;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0), rgba(99, 102, 241, 0.65), rgba(14, 165, 233, 0));
+        }
+        .sidebar-nav-wrapper .navbar-logo {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            margin-bottom: 20px;
+            padding-bottom: 24px;
+        }
+        .sidebar-nav-wrapper .navbar-logo img {
+            filter: brightness(0) invert(1);
+        }
+        .sidebar-nav-wrapper .navbar-logo img.custom-brand-logo {
+            max-height: 54px;
+            width: auto;
+            filter: none;
+        }
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item a {
+            color: #cbd5e1;
+            border-radius: 12px;
+            margin: 3px 14px;
+            width: auto;
+            padding: 11px 14px;
+        }
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item a .icon {
+            color: #94a3b8;
+            margin-top: 0;
+        }
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item.active > a,
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item.active > a.collapsed,
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item:hover > a,
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item:hover > a.collapsed {
+            color: #ffffff;
+            background: rgba(59, 130, 246, 0.14);
+            box-shadow: inset 3px 0 0 #38bdf8;
+        }
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item.active > a .icon,
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item.active > a.collapsed .icon,
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item:hover > a .icon,
+        .sidebar-nav-wrapper .sidebar-nav ul .nav-item:hover > a.collapsed .icon {
+            color: #38bdf8;
+        }
+        .sidebar-nav-wrapper .promo-box {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+        }
+        .sidebar-nav-wrapper .promo-box .promo-icon {
+            border-color: #1e293b;
+        }
+        .sidebar-nav-wrapper .promo-box h3 {
+            color: #f8fafc;
+        }
+        .sidebar-nav-wrapper .promo-box p {
+            color: #cbd5e1;
+        }
+        .main-wrapper {
+            background: #f4f7fb;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.94);
+            border-bottom: 1px solid #e5e7eb;
+            backdrop-filter: blur(10px);
+        }
+        #menu-toggle {
+            min-width: 132px;
+            justify-content: center;
         }
         .image-upload-field {
             position: relative;
@@ -136,6 +222,37 @@
             border-radius: 10px;
             object-fit: cover;
         }
+        .upload-preview-list {
+            display: grid;
+            gap: 10px;
+            max-width: 460px;
+        }
+        .upload-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: fit-content;
+            max-width: 100%;
+            min-width: 320px;
+            padding: 8px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+        .upload-preview-item img {
+            width: 64px;
+            height: 46px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex: 0 0 auto;
+        }
+        .upload-preview-item span {
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+            word-break: break-word;
+            max-width: 330px;
+        }
         .grid-table {
             border: 1px solid #e5e7eb;
             border-radius: 10px;
@@ -143,15 +260,13 @@
             border-collapse: separate;
             border-spacing: 0;
         }
-        .data-grid-wrap {
-            padding: 10px;
-        }
         .grid-table thead th,
         .grid-table tbody td {
             border-right: 1px solid #e5e7eb;
             border-bottom: 1px solid #e5e7eb;
             vertical-align: middle;
-            padding: 14px 16px;
+            padding: 18px 16px;
+            line-height: 1.4;
         }
         .grid-table thead th {
             font-weight: 600;
@@ -162,13 +277,18 @@
             color: #475569;
         }
         .grid-table tbody td h6 {
-            margin-bottom: 3px;
+            margin-bottom: 0;
             font-weight: 500;
             color: #1f2937;
         }
         .grid-table tbody td .text-sm {
             color: #64748b;
             font-weight: 400;
+            margin-top: 4px;
+        }
+        .grid-table tbody td img {
+            display: block;
+            margin: 0 auto;
         }
         .grid-table thead th:last-child,
         .grid-table tbody td:last-child {
@@ -212,6 +332,8 @@
             border-radius: 50%;
             font-size: 14px;
             font-weight: 700;
+            border: 0;
+            cursor: pointer;
         }
         .bool-indicator.is-true {
             color: #047857;
@@ -271,6 +393,65 @@
         .alert ul {
             margin-bottom: 0;
         }
+        .app-alert-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+        }
+        .app-alert-backdrop.is-open {
+            display: flex;
+        }
+        .app-alert-dialog {
+            width: min(420px, 100%);
+            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 24px 80px rgba(15, 23, 42, 0.28);
+            overflow: hidden;
+        }
+        .app-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px 10px;
+        }
+        .app-alert-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #b45309;
+            background: #fef3c7;
+            flex: 0 0 auto;
+        }
+        .app-alert-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .app-alert-message {
+            padding: 0 20px 18px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+        .app-alert-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+        }
 
         body[data-theme="dark"] {
             background: #111827;
@@ -306,6 +487,34 @@
             background: transparent !important;
             border-color: #374151 !important;
         }
+        body[data-theme="dark"] .app-alert-dialog {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        body[data-theme="dark"] .app-alert-title {
+            color: #f8fafc;
+        }
+        body[data-theme="dark"] .app-alert-message {
+            color: #cbd5e1;
+        }
+        body[data-theme="dark"] .app-alert-actions {
+            background: #111827;
+            border-top-color: #374151;
+        }
+        body[data-theme="dark"] .sidebar-nav-wrapper {
+            background: linear-gradient(180deg, #020617 0%, #0f172a 52%, #111827 100%) !important;
+            box-shadow: 18px 0 45px rgba(0, 0, 0, 0.28);
+        }
+        body[data-theme="dark"] .sidebar-nav-wrapper .promo-box {
+            background: rgba(2, 6, 23, 0.72) !important;
+        }
+        body[data-theme="dark"] .main-wrapper {
+            background: #0f172a !important;
+        }
+        body[data-theme="dark"] .header {
+            background: rgba(31, 41, 55, 0.94) !important;
+            border-bottom-color: #374151 !important;
+        }
         body[data-theme="dark"] .input-style-1 input,
         body[data-theme="dark"] .input-style-1 textarea,
         body[data-theme="dark"] .select-style-1 .select-position select {
@@ -338,6 +547,13 @@
         body[data-theme="dark"] .image-preview-card {
             background: #111827;
             border-color: #374151;
+        }
+        body[data-theme="dark"] .upload-preview-item {
+            background: #111827;
+            border-color: #374151;
+        }
+        body[data-theme="dark"] .upload-preview-item span {
+            color: #cbd5e1;
         }
         body[data-theme="dark"] .grid-table {
             border-color: #374151;
@@ -412,17 +628,10 @@
 <aside class="sidebar-nav-wrapper">
     <div class="navbar-logo">
         <a href="{{ route('admin.dashboard') }}">
-            <img src="{{ asset('plainadmin/images/logo/logo.svg') }}" alt="logo">
+            <img class="{{ $adminLogoUrl ? 'custom-brand-logo' : '' }}" src="{{ $adminLogoSrc }}" alt="{{ $adminBrandName }}">
         </a>
     </div>
     @include('partials.admin-nav')
-    <div class="promo-box">
-        <div class="promo-icon">
-            <img class="mx-auto" src="{{ asset('plainadmin/images/logo/logo-icon-big.svg') }}" alt="Logo">
-        </div>
-        <h3>Hotel Admin</h3>
-        <p>Gestion centralizada de habitaciones, reservas y contenido de la web.</p>
-    </div>
 </aside>
 <div class="overlay"></div>
 
@@ -433,8 +642,8 @@
                 <div class="col-lg-6 col-md-6 col-6">
                     <div class="header-left d-flex align-items-center">
                         <div class="menu-toggle-btn mr-15">
-                            <button id="menu-toggle" class="main-btn primary-btn btn-hover">
-                                <i class="lni lni-chevron-left me-2"></i> Menu
+                            <button id="menu-toggle" class="main-btn primary-btn btn-hover" type="button" aria-expanded="true">
+                                <i class="lni lni-chevron-left me-2"></i><span id="sidebar-toggle-label">Cerrar menu</span>
                             </button>
                         </div>
                     </div>
@@ -506,14 +715,25 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="terms d-flex justify-content-center justify-content-md-end">
-                        <span class="text-sm">Laravel + Bootstrap + jQuery</span>
-                    </div>
                 </div>
             </div>
         </div>
     </footer>
 </main>
+
+<div class="app-alert-backdrop" id="app-alert" aria-hidden="true">
+    <div class="app-alert-dialog" role="dialog" aria-modal="true" aria-labelledby="app-alert-title" aria-describedby="app-alert-message">
+        <div class="app-alert-header">
+            <span class="app-alert-icon"><i class="lni lni-warning"></i></span>
+            <h3 class="app-alert-title" id="app-alert-title">Confirmar accion</h3>
+        </div>
+        <div class="app-alert-message" id="app-alert-message">Esta accion requiere confirmacion.</div>
+        <div class="app-alert-actions">
+            <button type="button" class="main-btn light-btn btn-hover" id="app-alert-cancel">Cancelar</button>
+            <button type="button" class="main-btn danger-btn btn-hover" id="app-alert-confirm">Confirmar</button>
+        </div>
+    </div>
+</div>
 
 <script src="{{ asset('plainadmin/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('plainadmin/js/main.js') }}"></script>
@@ -558,22 +778,143 @@
     })();
 
     $(function () {
+        const appAlert = $('#app-alert');
+        const appAlertTitle = $('#app-alert-title');
+        const appAlertMessage = $('#app-alert-message');
+        const appAlertCancel = $('#app-alert-cancel');
+        const appAlertConfirm = $('#app-alert-confirm');
+        let appAlertResolver = null;
+
+        function closeAppAlert(result) {
+            appAlert.removeClass('is-open').attr('aria-hidden', 'true');
+
+            if (appAlertResolver) {
+                appAlertResolver(result);
+                appAlertResolver = null;
+            }
+        }
+
+        window.AppAlert = {
+            confirm: function (options) {
+                const settings = Object.assign({
+                    title: 'Confirmar accion',
+                    message: 'Esta accion requiere confirmacion.',
+                    confirmText: 'Confirmar',
+                    cancelText: 'Cancelar',
+                }, options || {});
+
+                appAlertTitle.text(settings.title);
+                appAlertMessage.text(settings.message);
+                appAlertConfirm.text(settings.confirmText).show();
+                appAlertCancel.text(settings.cancelText).show();
+                appAlert.addClass('is-open').attr('aria-hidden', 'false');
+                appAlertConfirm.trigger('focus');
+
+                return new Promise(function (resolve) {
+                    appAlertResolver = resolve;
+                });
+            },
+            show: function (options) {
+                const settings = Object.assign({
+                    title: 'Aviso',
+                    message: '',
+                    confirmText: 'Entendido',
+                }, options || {});
+
+                appAlertTitle.text(settings.title);
+                appAlertMessage.text(settings.message);
+                appAlertConfirm.text(settings.confirmText).show();
+                appAlertCancel.hide();
+                appAlert.addClass('is-open').attr('aria-hidden', 'false');
+                appAlertConfirm.trigger('focus');
+
+                return new Promise(function (resolve) {
+                    appAlertResolver = resolve;
+                });
+            },
+        };
+
+        appAlertCancel.on('click', function () {
+            closeAppAlert(false);
+        });
+
+        appAlertConfirm.on('click', function () {
+            closeAppAlert(true);
+        });
+
+        appAlert.on('click', function (event) {
+            if (event.target === this) {
+                closeAppAlert(false);
+            }
+        });
+
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Escape' && appAlert.hasClass('is-open')) {
+                closeAppAlert(false);
+            }
+        });
+
         $('.image-upload-field').each(function () {
             const field = $(this);
             const input = field.find('input[type="file"]');
             const fileNameTarget = field.find('[data-upload-filename]');
             const previewSelector = field.data('preview-target');
             const previewWrapperSelector = field.data('preview-wrapper');
+            const previewList = field.siblings('[data-upload-preview-list]');
+            let selectedFiles = [];
+
+            function syncMultipleInputFiles() {
+                if (!field.data('multiple-upload') || typeof DataTransfer === 'undefined') {
+                    return;
+                }
+
+                const dataTransfer = new DataTransfer();
+                selectedFiles.forEach(function (selectedFile) {
+                    dataTransfer.items.add(selectedFile);
+                });
+                input[0].files = dataTransfer.files;
+            }
+
+            function renderPreviewList() {
+                if (!previewList.length) {
+                    return;
+                }
+
+                previewList.empty();
+
+                if (selectedFiles.length === 0) {
+                    previewList.addClass('d-none');
+                    return;
+                }
+
+                previewList.removeClass('d-none');
+                selectedFiles.forEach(function (selectedFile) {
+                    const objectUrl = URL.createObjectURL(selectedFile);
+                    const item = $('<div class="upload-preview-item"></div>');
+                    item.append($('<img>', { src: objectUrl, alt: selectedFile.name }));
+                    item.append($('<span></span>').text(selectedFile.name));
+                    previewList.append(item);
+                });
+            }
 
             input.on('change', function () {
-                const file = this.files && this.files[0] ? this.files[0] : null;
+                const files = this.files ? Array.from(this.files) : [];
+                const file = files[0] ?? null;
 
                 if (!file) {
                     return;
                 }
 
+                if (field.data('multiple-upload')) {
+                    selectedFiles = selectedFiles.concat(files);
+                    syncMultipleInputFiles();
+                } else {
+                    selectedFiles = files;
+                }
+
                 field.addClass('has-file');
-                fileNameTarget.text(file.name);
+                fileNameTarget.text(selectedFiles.length > 1 ? selectedFiles.length + ' archivos seleccionados' : selectedFiles[0].name);
+                renderPreviewList();
 
                 if (previewSelector) {
                     const previewImage = $(previewSelector);
@@ -594,9 +935,65 @@
         }, 2500);
 
         $(document).on('click', '[data-confirm-delete]', function (event) {
-            if (!confirm('Esta accion eliminara el registro. Deseas continuar?')) {
-                event.preventDefault();
-            }
+            event.preventDefault();
+
+            const trigger = $(this);
+            const form = trigger.closest('form');
+            const message = trigger.data('confirmMessage') || 'Esta accion eliminara o desactivara el registro. Deseas continuar?';
+
+            window.AppAlert.confirm({
+                title: 'Confirmar eliminacion',
+                message: message,
+                confirmText: 'Si, continuar',
+                cancelText: 'Cancelar',
+            }).then(function (confirmed) {
+                if (confirmed && form.length) {
+                    form.trigger('submit');
+                }
+            });
+        });
+
+        $(document).on('submit', '[data-toggle-visibility]', function (event) {
+            event.preventDefault();
+
+            const form = $(this);
+            const button = form.find('.bool-indicator');
+            const token = form.find('input[name="_token"]').val();
+
+            button.prop('disabled', true);
+
+            fetch(form.attr('action'), {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('No se pudo actualizar la visibilidad.');
+                    }
+
+                    return response.json();
+                })
+                .then(function (payload) {
+                    button
+                        .toggleClass('is-true', payload.visible)
+                        .toggleClass('is-false', !payload.visible)
+                        .attr('title', payload.label)
+                        .attr('aria-label', payload.label)
+                        .html(payload.symbol);
+                })
+                .catch(function () {
+                    window.AppAlert.show({
+                        title: 'No se pudo actualizar',
+                        message: 'Intenta nuevamente en unos segundos.',
+                    });
+                })
+                .finally(function () {
+                    button.prop('disabled', false);
+                });
         });
     });
 </script>

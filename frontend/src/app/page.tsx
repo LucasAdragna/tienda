@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { AmenitiesSection, GalleryPreview, HeroHotel, RoomsPreview } from "@/components/common";
+import { AboutUsSection, GalleryPreview, HeroHotel, RoomsPreview } from "@/components/common";
 
 export default function HomePage() {
   return (
     <>
       <HeroHotel />
       <RoomsPreview />
-      <AmenitiesSection />
+      <AboutUsSection />
       <GalleryPreview />
 
       <section className="py-5 cta-section">

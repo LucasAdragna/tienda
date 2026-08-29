@@ -1,37 +1,65 @@
 @csrf
 
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="input-style-1">
             <label for="customer_name">Nombre del cliente</label>
             <input type="text" id="customer_name" name="customer_name" value="{{ old('customer_name', $reservation->customer_name ?? '') }}" maxlength="120" required>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="input-style-1">
             <label for="customer_phone">Telefono</label>
             <input type="text" id="customer_phone" name="customer_phone" value="{{ old('customer_phone', $reservation->customer_phone ?? '') }}" maxlength="30" required>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="input-style-1">
             <label for="customer_email">Email</label>
             <input type="email" id="customer_email" name="customer_email" value="{{ old('customer_email', $reservation->customer_email ?? '') }}" maxlength="120" required>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="input-style-1">
-            <label for="reservation_date">Fecha y hora</label>
-            <input type="datetime-local" id="reservation_date" name="reservation_date" value="{{ old('reservation_date', isset($reservation) ? $reservation->reservation_date->format('Y-m-d\TH:i') : '') }}" required>
+            <label for="check_in">Check-in</label>
+            <input type="date" id="check_in" name="check_in" value="{{ old('check_in', isset($reservation) && $reservation->check_in ? $reservation->check_in->format('Y-m-d') : '') }}" required>
         </div>
     </div>
     <div class="col-md-4">
         <div class="input-style-1">
-            <label for="people_count">Cantidad de personas</label>
-            <input type="number" id="people_count" name="people_count" min="1" max="20" value="{{ old('people_count', $reservation->people_count ?? 1) }}" required>
+            <label for="check_out">Check-out</label>
+            <input type="date" id="check_out" name="check_out" value="{{ old('check_out', isset($reservation) && $reservation->check_out ? $reservation->check_out->format('Y-m-d') : '') }}" required>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-4">
+        <div class="input-style-1">
+            <label for="room_type">Habitacion</label>
+            <input type="text" id="room_type" name="room_type" value="{{ old('room_type', $reservation->room_type ?? '') }}" maxlength="120" required>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="input-style-1">
+            <label for="adults">Adultos</label>
+            <input type="number" id="adults" name="adults" min="1" max="8" value="{{ old('adults', $reservation->adults ?? 1) }}" required>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="input-style-1">
+            <label for="children">Ninos</label>
+            <input type="number" id="children" name="children" min="0" max="6" value="{{ old('children', $reservation->children ?? 0) }}" required>
+        </div>
+    </div>
+    <div class="col-md-4">
         <div class="select-style-1">
             <label for="status">Estado</label>
             <div class="select-position">

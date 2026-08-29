@@ -1,4 +1,4 @@
-import { isValidEmail } from "@/utils/formSecurity";
+import { isValidEmail, isValidPhone } from "@/utils/formSecurity";
 import type { ReservationFormData, ReservationValidationErrors } from "../types/reserva.types";
 
 export function validateReservation(data: ReservationFormData): ReservationValidationErrors {
@@ -7,11 +7,13 @@ export function validateReservation(data: ReservationFormData): ReservationValid
   if (data.website.trim()) errors.website = "Solicitud rechazada.";
   if (!data.checkIn) errors.checkIn = "Selecciona fecha de entrada.";
   if (!data.checkOut) errors.checkOut = "Selecciona fecha de salida.";
+  if (!data.roomType.trim()) errors.roomType = "Selecciona una habitacion.";
   if (!data.guestName.trim()) errors.guestName = "Ingresa nombre del huesped.";
   if (data.guestName.length < 3 || data.guestName.length > 80) {
     errors.guestName = "El nombre debe tener entre 3 y 80 caracteres.";
   }
   if (!isValidEmail(data.guestEmail)) errors.guestEmail = "Ingresa un email valido.";
+  if (!isValidPhone(data.guestPhone)) errors.guestPhone = "Ingresa un telefono valido.";
   if (!Number.isInteger(data.adults) || data.adults < 1 || data.adults > 8) {
     errors.adults = "Adultos permitidos: 1 a 8.";
   }

@@ -23,31 +23,37 @@
   const mainWrapper = document.querySelector(".main-wrapper");
   const menuToggleButton = document.querySelector("#menu-toggle");
   const menuToggleButtonIcon = document.querySelector("#menu-toggle i");
+  const menuToggleButtonLabel = document.querySelector("#sidebar-toggle-label");
   const overlay = document.querySelector(".overlay");
+
+  const syncSidebarToggle = () => {
+    const isDesktop = document.body.clientWidth > 1200;
+    const isActive = sidebarNavWrapper.classList.contains("active");
+    const isOpen = isDesktop ? !isActive : isActive;
+
+    menuToggleButton.setAttribute("aria-expanded", String(isOpen));
+    if (menuToggleButtonLabel) {
+      menuToggleButtonLabel.textContent = isOpen ? "Cerrar menu" : "Abrir menu";
+    }
+
+    menuToggleButtonIcon.classList.toggle("lni-chevron-left", isOpen);
+    menuToggleButtonIcon.classList.toggle("lni-menu", !isOpen);
+  };
 
   menuToggleButton.addEventListener("click", () => {
     sidebarNavWrapper.classList.toggle("active");
     overlay.classList.add("active");
     mainWrapper.classList.toggle("active");
 
-    if (document.body.clientWidth > 1200) {
-      if (menuToggleButtonIcon.classList.contains("lni-chevron-left")) {
-        menuToggleButtonIcon.classList.remove("lni-chevron-left");
-        menuToggleButtonIcon.classList.add("lni-menu");
-      } else {
-        menuToggleButtonIcon.classList.remove("lni-menu");
-        menuToggleButtonIcon.classList.add("lni-chevron-left");
-      }
-    } else {
-      if (menuToggleButtonIcon.classList.contains("lni-chevron-left")) {
-        menuToggleButtonIcon.classList.remove("lni-chevron-left");
-        menuToggleButtonIcon.classList.add("lni-menu");
-      }
-    }
+    syncSidebarToggle();
   });
   overlay.addEventListener("click", () => {
     sidebarNavWrapper.classList.remove("active");
     overlay.classList.remove("active");
     mainWrapper.classList.remove("active");
+    syncSidebarToggle();
   });
+
+  window.addEventListener("resize", syncSidebarToggle);
+  syncSidebarToggle();
 })();
