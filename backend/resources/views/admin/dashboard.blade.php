@@ -60,6 +60,12 @@
 @section('content')
     <div class="row pt-30">
         <div class="col-12 col-md-6 col-xl-4">
+            <a class="admin-module-card mb-30" href="{{ route('admin.promociones.index') }}">
+                <span class="admin-module-icon"><i class="lni lni-gift"></i></span>
+                <span><h3>Promociones</h3><p>Publicá ofertas con vencimiento automático.</p></span>
+            </a>
+        </div>
+        <div class="col-12 col-md-6 col-xl-4">
             <a class="admin-module-card mb-30" href="{{ route('admin.productos.index') }}">
                 <span class="admin-module-icon"><i class="lni lni-apartment"></i></span>
                 <span><h3>Habitaciones</h3><p>Administrá las habitaciones y sus datos.</p></span>

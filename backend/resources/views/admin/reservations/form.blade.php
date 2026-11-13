@@ -43,8 +43,19 @@
     </div>
     <div class="col-md-4">
         <div class="input-style-1">
-            <label for="room_type">Habitacion</label>
-            <input type="text" id="room_type" name="room_type" value="{{ old('room_type', $reservation->room_type ?? '') }}" maxlength="120" required>
+            <label for="product_id">Habitación física</label>
+            @if(isset($reservation) && ! $reservation->product_id)
+                <div class="alert alert-warning">Reserva anterior sin habitación vinculada ({{ $reservation->room_type ?? 'sin identificar' }}). Seleccioná la unidad correcta antes de confirmarla, o cancelá la solicitud.</div>
+            @endif
+            <select id="product_id" name="product_id" class="form-select">
+                <option value="">Seleccionar habitación</option>
+                @foreach($rooms as $room)
+                    <option value="{{ $room->id }}" @selected((string) old('product_id', $reservation->product_id ?? '') === (string) $room->id)>
+                        #{{ $room->id }} · {{ $room->name }} · {{ $room->stock }} personas{{ ! $room->is_active ? ' (inactiva)' : '' }}
+                    </option>
+                @endforeach
+            </select>
+            <small class="text-muted">Cada registro representa una unidad. La salida libera la habitación para otra entrada ese día.</small>
         </div>
     </div>
     <div class="col-md-4">

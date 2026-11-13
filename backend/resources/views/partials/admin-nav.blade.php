@@ -24,6 +24,12 @@
                 <span class="text">Reservas</span>
             </a>
         </li>
+        <li class="nav-item {{ request()->routeIs('admin.promociones.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.promociones.index') }}">
+                <span class="icon"><i class="lni lni-gift"></i></span>
+                <span class="text">Promociones</span>
+            </a>
+        </li>
         <li class="nav-item {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
             <a href="{{ route('admin.sliders.index') }}">
                 <span class="icon"><i class="lni lni-image"></i></span>

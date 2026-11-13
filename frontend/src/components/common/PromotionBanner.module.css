@@ -1,0 +1,26 @@
+.banner {
+  padding: 2rem 0;
+  background: linear-gradient(115deg, var(--hotel-dark), #173d57);
+  color: #fff;
+  border-bottom: 4px solid #d8bd81;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.copy { max-width: 52rem; min-width: 0; }
+.eyebrow { color: #f1dcae; text-transform: uppercase; font-size: .75rem; letter-spacing: .13em; margin-bottom: .5rem; font-weight: 600; }
+.title { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: .5rem; overflow-wrap: anywhere; }
+.description { margin-bottom: .75rem; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+.validity { color: #dae4ed; font-size: .85rem; margin: 0; }
+.cta { flex-shrink: 0; font-weight: 600; padding: .9rem 1.4rem; max-width: 100%; white-space: normal; }
+.cta:focus-visible { outline: 3px solid #f1dcae; outline-offset: 5px; }
+
+@media (max-width: 767px) {
+  .content { align-items: flex-start; flex-direction: column; gap: 1.25rem; }
+  .cta { width: 100%; }
+}

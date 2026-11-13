@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { AboutUsSection, GalleryPreview, HeroHotel, RoomsPreview } from "@/components/common";
+import PromotionBanner from "@/components/common/PromotionBanner";
 
 export default function HomePage() {
   return (
     <>
       <HeroHotel />
+      <PromotionBanner />
       <RoomsPreview />
       <AboutUsSection />
       <GalleryPreview />

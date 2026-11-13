@@ -18,6 +18,10 @@
         </div>
     </div>
 
+    @if($unlinkedReservations > 0)
+        <div class="alert alert-warning">Hay {{ $unlinkedReservations }} reservas anteriores sin habitación vinculada. Revisalas antes de confirmar nuevas estadías: su disponibilidad no puede verificarse automáticamente.</div>
+    @endif
+
     <div class="card-style mb-30">
         <div class="table-wrapper table-responsive data-grid-wrap">
             <table class="table grid-table">
@@ -46,7 +50,13 @@
                                 {{ $reservation->reservation_date->format('d/m/Y H:i') }}
                             @endif
                         </td>
-                        <td>{{ $reservation->room_type ?? '-' }}</td>
+                        <td>
+                            @if($reservation->room)
+                                #{{ $reservation->room->id }} · {{ $reservation->room->name }}
+                            @else
+                                {{ $reservation->room_type ?? '-' }} <span class="text-warning">(sin vincular)</span>
+                            @endif
+                        </td>
                         <td class="text-center">{{ $reservation->people_count }}</td>
                         <td><span class="status-btn info-btn">{{ ucfirst($reservation->status) }}</span></td>
                         <td class="text-center">

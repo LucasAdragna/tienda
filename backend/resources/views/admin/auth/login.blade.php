@@ -6,7 +6,8 @@
     $loginImageUrl = config('admin_branding.login_image_url');
     $accentColor = config('admin_branding.accent_color');
     $logoSrc = $logoUrl ? (str_starts_with($logoUrl, 'http') || str_starts_with($logoUrl, '/') ? $logoUrl : asset($logoUrl)) : null;
-    $loginImageSrc = $loginImageUrl ? (str_starts_with($loginImageUrl, 'http') || str_starts_with($loginImageUrl, '/') ? $loginImageUrl : asset($loginImageUrl)) : asset('plainadmin/images/signin/signin-image.svg');
+    $loginImageSrc = $loginImageUrl ? (str_starts_with($loginImageUrl, 'http') || str_starts_with($loginImageUrl, '/') ? $loginImageUrl : asset($loginImageUrl)) : null;
+    $coverSrc = $loginImageSrc ?: ($logoSrc ?: asset('plainadmin/images/auth/signin-image.svg'));
 @endphp
 <!doctype html>
 <html lang="es">
@@ -19,221 +20,289 @@
     <style>
         :root {
             --admin-accent: {{ $accentColor }};
-            --admin-accent-soft: color-mix(in srgb, var(--admin-accent) 16%, white);
+            --admin-accent-soft: color-mix(in srgb, var(--admin-accent) 12%, white);
+            --auth-ink: #20242d;
+            --auth-muted: #737986;
+            --auth-border: #e5e7eb;
         }
-        * {
+
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
+
         body {
             min-height: 100vh;
             margin: 0;
+            color: var(--auth-ink);
+            background: #f7f8fb;
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            color: #0f172a;
-            background:
-                radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 34%),
-                linear-gradient(135deg, #f8fafc 0%, #eef2ff 52%, #e0f2fe 100%);
         }
-        .login-shell {
+
+        .auth-cover {
             min-height: 100vh;
             display: grid;
-            grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr);
+            grid-template-columns: minmax(0, 1.65fr) minmax(420px, 1fr);
         }
-        .login-visual {
+
+        .auth-cover-left {
             position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 48px;
-            overflow: hidden;
-            color: #fff;
-            background:
-                linear-gradient(135deg, rgba(15, 23, 42, 0.84), rgba(30, 64, 175, 0.72)),
-                url('{{ $loginImageSrc }}') center / cover no-repeat;
-        }
-        .login-visual::after {
-            content: "";
-            position: absolute;
-            inset: auto -12% -18% auto;
-            width: 360px;
-            height: 360px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.12);
-            filter: blur(2px);
-        }
-        .brand-lockup {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            font-size: 24px;
-        }
-        .brand-logo {
-            width: 54px;
-            height: 54px;
-            border-radius: 18px;
-            display: grid;
-            place-items: center;
-            background: rgba(255, 255, 255, 0.92);
-            color: var(--admin-accent);
-            font-size: 22px;
-            font-weight: 900;
-            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.26);
-            overflow: hidden;
-        }
-        .brand-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 8px;
-        }
-        .visual-copy {
-            position: relative;
-            z-index: 1;
-            max-width: 620px;
-        }
-        .visual-copy .eyebrow {
-            display: inline-flex;
-            padding: 8px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            font-size: 13px;
-            margin-bottom: 22px;
-        }
-        .visual-copy h1 {
-            font-size: clamp(40px, 6vw, 76px);
-            line-height: 0.95;
-            letter-spacing: -0.07em;
-            margin: 0 0 22px;
-        }
-        .visual-copy p {
-            max-width: 520px;
-            font-size: 17px;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.82);
-            margin: 0;
-        }
-        .login-panel {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 24px;
+            overflow: hidden;
+            padding: 56px;
+            border-right: 1px solid var(--auth-border);
+            background:
+                radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--admin-accent) 10%, white), transparent 36%),
+                linear-gradient(145deg, #ffffff 0%, #f4f6fb 100%);
         }
-        .login-card {
-            width: min(100%, 440px);
-            padding: 34px;
-            border: 1px solid rgba(148, 163, 184, 0.28);
-            border-radius: 28px;
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 28px 80px rgba(15, 23, 42, 0.14);
-            backdrop-filter: blur(18px);
+
+        .auth-cover-left::before,
+        .auth-cover-left::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
         }
-        .login-card h2 {
-            margin: 0 0 8px;
-            font-size: 30px;
+
+        .auth-cover-left::before {
+            width: 420px;
+            height: 420px;
+            left: -180px;
+            bottom: -210px;
+            background: color-mix(in srgb, var(--admin-accent) 9%, transparent);
+        }
+
+        .auth-cover-left::after {
+            width: 260px;
+            height: 260px;
+            right: -110px;
+            top: -130px;
+            border: 1px solid color-mix(in srgb, var(--admin-accent) 18%, transparent);
+        }
+
+        .auth-cover-brand {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 700px);
+            text-align: center;
+        }
+
+        .auth-cover-brand img {
+            display: block;
+            width: auto;
+            max-width: min(100%, 650px);
+            max-height: 58vh;
+            margin: 0 auto 34px;
+            object-fit: contain;
+        }
+
+        .auth-cover-brand h1 {
+            margin: 0 0 10px;
+            color: var(--auth-ink);
+            font-size: clamp(24px, 3vw, 38px);
+            font-weight: 700;
             letter-spacing: -0.04em;
         }
-        .login-card .subtitle {
-            margin: 0 0 28px;
-            color: #64748b;
+
+        .auth-cover-brand p {
+            max-width: 520px;
+            margin: 0 auto;
+            color: var(--auth-muted);
+            font-size: 15px;
+            line-height: 1.7;
         }
-        .form-label {
-            font-weight: 700;
-            color: #334155;
-        }
-        .form-control {
-            min-height: 52px;
-            border: 1px solid #dbe3ef;
-            border-radius: 16px;
-            padding: 12px 15px;
+
+        .auth-cover-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            padding: 44px 38px;
+            border-top: 4px solid transparent;
+            border-image: linear-gradient(90deg, var(--admin-accent), #6d28d9) 1;
             background: #fff;
         }
-        .form-control:focus {
+
+        .auth-form-card {
+            width: min(100%, 440px);
+        }
+
+        .auth-form-card h2 {
+            margin: 0 0 8px;
+            color: var(--auth-ink);
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.045em;
+        }
+
+        .auth-form-card .intro {
+            margin: 0;
+            color: var(--auth-muted);
+            font-size: 14px;
+        }
+
+        .auth-form {
+            margin-top: 34px;
+        }
+
+        .auth-form .form-label {
+            margin-bottom: 8px;
+            color: #454b57;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .auth-form .form-control,
+        .auth-form .input-group-text {
+            min-height: 48px;
+            border-color: var(--auth-border);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .auth-form .form-control {
+            padding: 12px 14px;
+        }
+
+        .auth-form .input-group .form-control {
+            border-right: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .auth-form .input-group-text {
+            padding: 0 14px;
+            color: var(--auth-muted);
+            border-left: 0;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            cursor: pointer;
+        }
+
+        .auth-form .form-control:focus {
             border-color: var(--admin-accent);
-            box-shadow: 0 0 0 4px color-mix(in srgb, var(--admin-accent) 14%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 12%, transparent);
         }
-        .btn-login {
-            min-height: 52px;
-            border: 0;
-            border-radius: 16px;
-            background: linear-gradient(135deg, var(--admin-accent), #0f172a);
-            color: #fff;
-            font-weight: 800;
-            box-shadow: 0 18px 36px color-mix(in srgb, var(--admin-accent) 28%, transparent);
+
+        .auth-form .input-group:focus-within .input-group-text {
+            border-color: var(--admin-accent);
         }
-        .btn-login:hover {
-            color: #fff;
-            transform: translateY(-1px);
+
+        .auth-form .form-check-input:checked {
+            border-color: var(--admin-accent);
+            background-color: var(--admin-accent);
         }
-        .custom-note {
-            margin-top: 24px;
-            padding: 14px 16px;
-            border-radius: 18px;
-            background: #f8fafc;
-            color: #64748b;
+
+        .auth-form .form-check-label {
+            color: var(--auth-muted);
             font-size: 13px;
-            line-height: 1.5;
         }
-        @media (max-width: 960px) {
-            .login-shell {
+
+        .btn-login {
+            min-height: 48px;
+            border: 0;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--admin-accent), #6d28d9);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 12px 25px color-mix(in srgb, var(--admin-accent) 22%, transparent);
+        }
+
+        .btn-login:hover,
+        .btn-login:focus {
+            color: #fff;
+            filter: brightness(1.05);
+        }
+
+        .auth-note {
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid #f0f1f3;
+            color: var(--auth-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 991.98px) {
+            .auth-cover {
                 grid-template-columns: 1fr;
             }
-            .login-visual {
-                min-height: 320px;
-                padding: 28px;
+
+            .auth-cover-left {
+                min-height: 310px;
+                padding: 36px 24px;
+                border-right: 0;
             }
-            .visual-copy h1 {
-                font-size: 42px;
+
+            .auth-cover-brand img {
+                max-height: 180px;
+                margin-bottom: 20px;
+            }
+
+            .auth-cover-brand h1 {
+                font-size: 28px;
+            }
+
+            .auth-cover-right {
+                min-height: calc(100vh - 310px);
+                padding: 42px 24px 50px;
             }
         }
-        @media (max-width: 520px) {
-            .login-panel {
-                padding: 22px 14px;
+
+        @media (max-width: 575.98px) {
+            .auth-cover-left {
+                min-height: 250px;
+                padding: 28px 20px;
             }
-            .login-card {
-                padding: 24px;
-                border-radius: 22px;
+
+            .auth-cover-brand img {
+                max-height: 120px;
+            }
+
+            .auth-cover-brand h1 {
+                font-size: 24px;
+            }
+
+            .auth-cover-brand p {
+                font-size: 13px;
+            }
+
+            .auth-cover-right {
+                min-height: auto;
+                padding: 34px 20px 40px;
+            }
+
+            .auth-form-card h2 {
+                font-size: 27px;
             }
         }
     </style>
 </head>
 <body>
-    <main class="login-shell">
-        <section class="login-visual" aria-label="Identidad del hotel">
-            <div class="brand-lockup">
-                <span class="brand-logo">
-                    @if($logoSrc)
-                        <img src="{{ $logoSrc }}" alt="{{ $brandName }}">
-                    @else
-                        {{ substr($brandName, 0, 1) }}
-                    @endif
-                </span>
-                <span>{{ $brandName }}</span>
-            </div>
-
-            <div class="visual-copy">
-                <span class="eyebrow">Panel administrativo personalizable</span>
-                <h1>Gestion hotelera clara, segura y lista para vender.</h1>
+    <main class="auth-cover">
+        <section class="auth-cover-left" aria-label="Identidad del sistema">
+            <div class="auth-cover-brand">
+                <img src="{{ $coverSrc }}" alt="{{ $brandName }}">
+                <h1>{{ $brandName }}</h1>
                 <p>{{ $tagline }}</p>
             </div>
         </section>
 
-        <section class="login-panel">
-            <div class="login-card">
+        <section class="auth-cover-right">
+            <div class="auth-form-card">
                 <h2>Ingresar al panel</h2>
-                <p class="subtitle">Usa tu cuenta administradora para gestionar habitaciones, reservas y contenido.</p>
+                <p class="intro">Ingresá tus credenciales para administrar el sistema.</p>
 
                 @if(session('success'))
-                    <div class="alert alert-success" role="alert">
+                    <div class="alert alert-success mt-4" role="alert">
                         {{ session('success') }}
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('admin.login.store') }}" novalidate>
+                <form method="POST" action="{{ route('admin.login.store') }}" class="auth-form" novalidate>
                     @csrf
 
                     <div class="mb-3">
@@ -244,6 +313,7 @@
                             type="email"
                             class="form-control @error('email') is-invalid @enderror"
                             value="{{ old('email') }}"
+                            placeholder="nombre@ejemplo.com"
                             autocomplete="email"
                             autofocus
                             required
@@ -255,34 +325,52 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            class="form-control @error('password') is-invalid @enderror"
-                            autocomplete="current-password"
-                            required
-                        >
+                        <div class="input-group">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="form-control @error('password') is-invalid @enderror"
+                                placeholder="Ingresá tu password"
+                                autocomplete="current-password"
+                                required
+                            >
+                            <button class="input-group-text" type="button" data-password-toggle aria-label="Mostrar password">
+                                <span aria-hidden="true">◉</span>
+                            </button>
+                        </div>
                         @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
+                        <div class="form-check form-switch">
                             <input id="remember" name="remember" class="form-check-input" type="checkbox" value="1">
                             <label class="form-check-label" for="remember">Recordarme</label>
                         </div>
                     </div>
 
-                    <button class="btn btn-login w-100" type="submit">Entrar</button>
+                    <button class="btn btn-login w-100" type="submit">Ingresar</button>
                 </form>
 
-                <div class="custom-note">
-                    Para personalizar al vender el sistema: configurar <strong>ADMIN_BRAND_NAME</strong>, <strong>ADMIN_BRAND_LOGO_URL</strong> y <strong>ADMIN_LOGIN_IMAGE_URL</strong> en el entorno del comprador.
-                </div>
+                <p class="auth-note mb-0">
+                    La identidad del sistema se puede personalizar con <strong>ADMIN_BRAND_NAME</strong>,
+                    <strong>ADMIN_BRAND_LOGO_URL</strong> o <strong>ADMIN_LOGIN_IMAGE_URL</strong>.
+                </p>
             </div>
         </section>
     </main>
+
+    <script>
+        document.querySelector('[data-password-toggle]')?.addEventListener('click', function () {
+            const password = document.getElementById('password');
+            const isPassword = password.type === 'password';
+
+            password.type = isPassword ? 'text' : 'password';
+            this.setAttribute('aria-label', isPassword ? 'Ocultar password' : 'Mostrar password');
+            this.firstElementChild.textContent = isPassword ? '◌' : '◉';
+        });
+    </script>
 </body>
 </html>
